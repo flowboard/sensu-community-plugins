@@ -13,7 +13,7 @@
 #   Linux
 #
 # DEPENDENCIES:
-#   gem: aws-sdk
+#   gem: aws-sdk-v1
 #   gem: sensu-plugin
 #
 # USAGE:
@@ -27,9 +27,8 @@
 #   for details.
 #
 
-require 'rubygems' if RUBY_VERSION < '1.9.0'
 require 'sensu-plugin/check/cli'
-require 'aws-sdk'
+require 'aws-sdk-v1'
 
 class CheckInstanceEvents < Sensu::Plugin::Check::CLI
   option :aws_access_key,
@@ -95,7 +94,7 @@ class CheckInstanceEvents < Sensu::Plugin::Check::CLI
           #         "not_after": "2015-01-05 18:00:00 UTC"
           #     }
           # ]
-          unless i[:events_set].select { |x| x[:code] == 'system-reboot' && x[:description] =~ /\[Completed\]/ }
+          if i[:events_set].select { |x| x[:code] == 'system-reboot' && x[:description] =~ /\[Completed\]/ }.empty?
             event_instances << i[:instance_id]
           end
         end
